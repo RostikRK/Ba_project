@@ -8,12 +8,15 @@ const legend = L.control({ position: 'bottomright' });
 
 legend.onAdd = function (map) {
   const div = L.DomUtil.create('div', 'legend');
-  const colors = ['red', 'darkgreen', 'orange', 'lightgreen', 'yellow'];
+  const colors = ['red', 'brown', 'orange', 'yellow', 'green'];
   const labels = ['< 0.2', '0.2 - 0.4', '0.4 - 0.6', '0.6 - 0.8', '0.8 - 1'];
 
   div.innerHTML = '<b>Success probability:</b><br>';
-  for (let i = 0; i < colors.length; i++) {
+   for (let i = 0; i < colors.length; i++) {
     div.innerHTML +=
+      '<input type="checkbox" class="marker-checkbox" data-color="' +
+      colors[i] +
+      '" checked> ' +
       '<i style="background:' +
       colors[i] +
       '"></i> ' +
@@ -25,11 +28,19 @@ legend.onAdd = function (map) {
 };
 
 legend.addTo(map);
+
+const markersByColor = {
+  red: [],
+  brown: [],
+  orange: [],
+  yellow: [],
+  green: [],
+};
 outlets.forEach(outlet => {
-  const markerColor = outlet.predicted_has_combo > 0.8 ? 'yellow' :
-                      outlet.predicted_has_combo > 0.6 ? 'lightgreen' :
+  const markerColor = outlet.predicted_has_combo > 0.8 ? 'green' :
+                      outlet.predicted_has_combo > 0.6 ? 'yellow' :
                       outlet.predicted_has_combo > 0.4 ? 'orange' :
-                      outlet.predicted_has_combo > 0.2 ? 'darkgreen' : 'red';
+                      outlet.predicted_has_combo > 0.2 ? 'brown' : 'red';
 
   const markerIcon = L.icon({
       iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${markerColor}.png`,
@@ -39,6 +50,27 @@ outlets.forEach(outlet => {
     popupAnchor: [1, -34],
     shadowSize: [41, 41]
   });
-  const marker = L.marker([outlet.Lat, outlet.Lon], {icon: markerIcon}).addTo(map);
+  const marker = L.marker([outlet.Lat, outlet.Lon], { icon: markerIcon }).addTo(map);
   marker.bindPopup(`<b>${outlet.Outlet_Name}</b><br>Success probability: ${outlet.predicted_has_combo}`);
+
+  markersByColor[markerColor].push(marker);
+});
+
+function onCheckboxChange(e) {
+  const color = e.target.getAttribute('data-color');
+  const isChecked = e.target.checked;
+
+  // Show or hide markers based on the checkbox state
+  markersByColor[color].forEach((marker) => {
+    if (isChecked) {
+      marker.addTo(map);
+    } else {
+      marker.remove();
+    }
+  });
+}
+
+const checkboxes = document.querySelectorAll('.marker-checkbox');
+checkboxes.forEach((checkbox) => {
+  checkbox.addEventListener('change', onCheckboxChange);
 });
