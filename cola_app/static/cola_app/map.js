@@ -51,7 +51,7 @@ outlets.forEach(outlet => {
     shadowSize: [41, 41]
   });
   const marker = L.marker([outlet.Lat, outlet.Lon], { icon: markerIcon }).addTo(map);
-  marker.bindPopup(`<b>${outlet.Outlet_Name}</b><br>Success probability: ${outlet.predicted_has_combo}`);
+  marker.bindPopup(`<b>${outlet.Outlet_Name}</b><br>Rating: ${outlet.Rating}<br>Success probability: ${outlet.predicted_has_combo}`);
 
   markersByColor[markerColor].push(marker);
 });

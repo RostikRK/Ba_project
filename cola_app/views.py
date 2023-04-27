@@ -10,9 +10,10 @@ import pandas as pd
 
 # Read the dataframe (assuming it is stored in a CSV file)
 my_df = pd.read_csv("cola_app/templates/cola_app/my_dataframe.csv_")
+my_df_s = pd.read_csv("cola_app/templates/cola_app/my_df.csv")
 
-print(my_df['Country'])
 
+print(my_df.columns)
 def index(request):
     return render(request, "cola_app/index.html")
 
@@ -42,6 +43,6 @@ def show_map(request):
                           (my_df['City'].str.contains(city, case=False, na=False)) &
                           (my_df['Street'].str.contains(street, case=False, na=False))]
 
-    outlets = filtered_data[['Outlet_Name', 'Lat', 'Lon', 'predicted_has_combo']].to_dict(orient='records')
+    outlets = filtered_data[['Outlet_Name', 'Rating', 'Lat', 'Lon', 'predicted_has_combo']].to_dict(orient='records')
 
     return render(request, 'cola_app/map.html', {'outlets': outlets})
