@@ -8,9 +8,8 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 import pandas as pd
 
-# Read the dataframe (assuming it is stored in a CSV file)
-my_df = pd.read_csv("cola_app/templates/cola_app/my_dataframe.csv_")
-my_df_s = pd.read_csv("cola_app/templates/cola_app/my_df.csv")
+my_df_s = pd.read_csv("cola_app/templates/cola_app/my_dataframe.csv_")
+my_df = pd.read_csv("cola_app/templates/cola_app/my_df.csv")
 
 
 print(my_df.columns)
@@ -42,7 +41,8 @@ def show_map(request):
     filtered_data = my_df[(my_df['Country'].str.contains(country, case=False, na=False)) &
                           (my_df['City'].str.contains(city, case=False, na=False)) &
                           (my_df['Street'].str.contains(street, case=False, na=False))]
-
-    outlets = filtered_data[['Outlet_Name', 'Rating', 'Lat', 'Lon', 'predicted_has_combo']].to_dict(orient='records')
+    filtered_data.loc[:, 'Rating'] = filtered_data['Rating'].fillna(0)
+    filtered_data.loc[:, 'Category_Tier_1'] = filtered_data['Category_Tier_1'].fillna('Undefined')
+    outlets = filtered_data[['Outlet_Name', 'Rating', 'Category_Tier_1', 'Lat', 'Lon', 'successChanceCombo']].to_dict(orient='records')
 
     return render(request, 'cola_app/map.html', {'outlets': outlets})

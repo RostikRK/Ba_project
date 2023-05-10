@@ -37,10 +37,10 @@ const markersByColor = {
   green: [],
 };
 outlets.forEach(outlet => {
-  const markerColor = outlet.predicted_has_combo > 0.8 ? 'green' :
-                      outlet.predicted_has_combo > 0.6 ? 'yellow' :
-                      outlet.predicted_has_combo > 0.4 ? 'orange' :
-                      outlet.predicted_has_combo > 0.2 ? 'brown' : 'red';
+  const markerColor = outlet.successChanceCombo > 0.8 ? 'green' :
+                      outlet.successChanceCombo > 0.6 ? 'yellow' :
+                      outlet.successChanceCombo > 0.4 ? 'orange' :
+                      outlet.successChanceCombo > 0.2 ? 'brown' : 'red';
 
   const markerIcon = L.icon({
       iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${markerColor}.png`,
@@ -51,7 +51,7 @@ outlets.forEach(outlet => {
     shadowSize: [41, 41]
   });
   const marker = L.marker([outlet.Lat, outlet.Lon], { icon: markerIcon }).addTo(map);
-  marker.bindPopup(`<b>${outlet.Outlet_Name}</b><br>Rating: ${outlet.Rating}<br>Success probability: ${outlet.predicted_has_combo}`);
+  marker.bindPopup(`<b>${outlet.Outlet_Name}</b><br>Category: ${outlet.Category_Tier_1}<br>Rating: ${outlet.Rating}<br>Success probability: ${outlet.successChanceCombo}`);
 
   markersByColor[markerColor].push(marker);
 });
